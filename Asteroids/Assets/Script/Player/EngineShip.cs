@@ -9,6 +9,7 @@ public class EngineShip
     private LaserModel laserModel;
     private LaserView laserView;
     private GameObject laserObj;
+    private Timer timer;
 
     private float speed = 0.0001f;
     private float acceleration = 0;
@@ -21,11 +22,14 @@ public class EngineShip
 
     private int countShootLaser = 3;
     private int countShootLaserMax = 3;
-    private int timeReloud = 10;
+    private float timeReloud = 30;
+    private float timePassedText;
+    private bool laserIsReloud = false;
 
     public EngineShip(ShipView shipview)
     {
         this.shipView = shipview;
+        timer = shipView.gameObject.GetComponent<Timer>();
 
         shipView.shipStartMove += MoveShip;
         shipView.shipStartRotate += RotateShip;
@@ -33,6 +37,10 @@ public class EngineShip
         shipView.shipShootBullet += StartShootBullet;
         shipView.shipShootLaser += StartShootLaser;
         shipView.laserReloud += ReloudLaserCount;
+        shipView.checkLaserCountShoot += StartReloudLaser;
+
+        timer.timePassed += SetTimePassed;
+        timer.ready += ReloudLaserCount;
     }
 
     private void MoveShip(Transform transform)
@@ -83,21 +91,27 @@ public class EngineShip
         {
             laserView.gameObject.SetActive(true);
             countShootLaser--;
-            ReloudLaser();
+            StartReloudLaser();
         }
     }
 
-    private void ReloudLaser()
+    private void StartReloudLaser()
     {
-        if(countShootLaser != countShootLaserMax)
+        if(countShootLaser != countShootLaserMax && !laserIsReloud)
         {
-            shipView.StartReloudTimerView(timeReloud);
+            laserIsReloud = true;
+            timer.TimerNeedOn(timeReloud);
         }
     }
 
     private void ReloudLaserCount()
     {
         countShootLaser++;
+        laserIsReloud = false;
     }
     
+    private void SetTimePassed(float time)
+    {
+        timePassedText = time;
+    }
 }

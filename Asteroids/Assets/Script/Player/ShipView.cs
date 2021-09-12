@@ -15,6 +15,7 @@ public class ShipView : MonoBehaviour
     public UnityAction<Transform,Vector3> shipStartRotate;
     public UnityAction<Transform> shipStopMove;
     public UnityAction laserReloud;
+    public UnityAction checkLaserCountShoot;
 
     public UnityAction<BulletView> shipShootBullet;
     public UnityAction<GameObject> shipShootLaser;
@@ -31,6 +32,7 @@ public class ShipView : MonoBehaviour
 
     private void FixedUpdate()
     {
+        checkLaserCountShoot?.Invoke();
         if (shipIsMove)
         {
             shipStartMove?.Invoke(transform);
@@ -86,16 +88,5 @@ public class ShipView : MonoBehaviour
         {
             shipShootLaser?.Invoke(laserPrefab);
         }
-    }
-
-    public void StartReloudTimerView(int timer)
-    {
-        StartCoroutine(ReloudTimer(timer));
-    }
-
-    public IEnumerator ReloudTimer(int timer)
-    {
-        yield return new WaitForSeconds(timer);
-        laserReloud?.Invoke();
     }
 }
