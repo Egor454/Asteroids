@@ -22,9 +22,17 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Fire",
+                    "name": "FireBullet",
                     "type": "Button",
                     "id": "96b85083-4f2f-4da1-acf7-7febb8bb09ff",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "FireLaser",
+                    "type": "Button",
+                    "id": "4013109c-dacb-4238-b25b-d20e47d6d7dc",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -34,11 +42,11 @@
                 {
                     "name": "",
                     "id": "bee60137-a7eb-44ea-9772-831c95dc5f2a",
-                    "path": "<Keyboard>/space",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Fire",
+                    "action": "FireBullet",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -83,6 +91,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "13c9520d-d9a3-4729-9c62-9e9e19fea518",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FireLaser",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -6,18 +6,44 @@ using UnityEngine.InputSystem;
 
 public class ShipView : MonoBehaviour
 {
+    [SerializeField] private BulletView bulletPrefab;
+    [SerializeField] private GameObject laserPrefab;
+
     private new Transform transform;
 
-    public UnityAction shipStartMove;
-    public UnityAction shipStartRotate;
+    public UnityAction<Transform> shipStartMove;
+    public UnityAction<Transform,Vector3> shipStartRotate;
+    public UnityAction<Transform> shipStopMove;
+    public UnityAction laserReloud;
+
+    public UnityAction<BulletView> shipShootBullet;
+    public UnityAction<GameObject> shipShootLaser;
 
     private bool shipIsMove = false;
     private bool shipIsRotate = false;
 
-    public Vector2 directionOfRotation;
+    private Vector2 directionOfRotation;
+
     void Start()
     {
         transform = this.GetComponent<Transform>();
+    }
+
+    private void FixedUpdate()
+    {
+        if (shipIsMove)
+        {
+            shipStartMove?.Invoke(transform);
+        }
+        else
+        {
+            shipStopMove?.Invoke(transform);
+        }
+
+        if (shipIsRotate)
+        {
+            shipStartRotate?.Invoke(transform, directionOfRotation);
+        }
     }
 
     public void Move(InputAction.CallbackContext context)
@@ -30,41 +56,46 @@ public class ShipView : MonoBehaviour
         {
             shipIsMove = false;
         }
-        //Debug.Log(context);
-    }
-
-    private void Update()
-    {
-        if (shipIsMove)
-        {
-            shipStartMove?.Invoke();
-        }
-        if (shipIsRotate)
-        {
-            shipStartRotate?.Invoke();
-        }
     }
 
     public void Rotation(InputAction.CallbackContext value)
     {
-        shipIsRotate = true;
+        if (value.performed)
+        {
+            shipIsRotate = true;
+        }
+        else
+        {
+            shipIsRotate = false;
+        }
         directionOfRotation = value.ReadValue<Vector2>();
-        Debug.Log(value);
     }
 
-    public void Fire(InputAction.CallbackContext value)
+    public void FireBullet(InputAction.CallbackContext context)
     {
-        Debug.Log(value);
+        if (context.started)
+        {
+            BulletView bullet = Instantiate(this.bulletPrefab, this.transform.position, this.transform.rotation);
+            shipShootBullet?.Invoke(bullet);
+        }
     }
 
-    public void MoveShipOnScreen(float speed)
+    public void FireLaser(InputAction.CallbackContext context)
     {
-        transform.position += transform.up * speed;
-        Debug.Log(speed);
+        if (context.started)
+        {
+            shipShootLaser?.Invoke(laserPrefab);
+        }
     }
-    public void RotateShipOnScreen(float rotate)
+
+    public void StartReloudTimerView(int timer)
     {
-        transform.Rotate(directionOfRotation.y * rotate, directionOfRotation.y * rotate, directionOfRotation.x * (-rotate));
-        Debug.Log(rotate);
+        StartCoroutine(ReloudTimer(timer));
+    }
+
+    public IEnumerator ReloudTimer(int timer)
+    {
+        yield return new WaitForSeconds(timer);
+        laserReloud?.Invoke();
     }
 }

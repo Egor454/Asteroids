@@ -12,7 +12,6 @@ public class Initialization : MonoBehaviour
         EngineShip engineShip = new EngineShip(shipView);
     }
 
-    // Update is called once per frame
     void Update()
     {
         
