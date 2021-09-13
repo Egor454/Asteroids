@@ -11,9 +11,9 @@ public class ShipView : MonoBehaviour
 
     private new Transform transform;
 
-    public UnityAction<Transform> shipStartMove;
-    public UnityAction<Transform,Vector3> shipStartRotate;
-    public UnityAction<Transform> shipStopMove;
+    public UnityAction shipStartMove;
+    public UnityAction<Vector3> shipStartRotate;
+    public UnityAction shipStopMove;
     public UnityAction laserReloud;
     public UnityAction checkLaserCountShoot;
 
@@ -35,16 +35,16 @@ public class ShipView : MonoBehaviour
         checkLaserCountShoot?.Invoke();
         if (shipIsMove)
         {
-            shipStartMove?.Invoke(transform);
+            shipStartMove?.Invoke();
         }
         else
         {
-            shipStopMove?.Invoke(transform);
+            shipStopMove?.Invoke();
         }
 
         if (shipIsRotate)
         {
-            shipStartRotate?.Invoke(transform, directionOfRotation);
+            shipStartRotate?.Invoke(directionOfRotation);
         }
     }
 
@@ -77,7 +77,7 @@ public class ShipView : MonoBehaviour
     {
         if (context.started)
         {
-            BulletView bullet = Instantiate(this.bulletPrefab, this.transform.position, this.transform.rotation);
+            BulletView bullet = Instantiate(bulletPrefab,transform.position,transform.rotation);
             shipShootBullet?.Invoke(bullet);
         }
     }

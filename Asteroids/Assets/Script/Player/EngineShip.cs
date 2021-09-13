@@ -10,12 +10,13 @@ public class EngineShip
     private LaserView laserView;
     private GameObject laserObj;
     private Timer timer;
+    private Transform transform;
 
     private float speed = 0.0001f;
     private float acceleration = 0;
     private float moveSpeed = 0;
     private float constantAcceleration = 0.00001f;
-    private float constantBraking = 0.01f;
+    private float constantBraking = 0.03f;
     private float speedRotate = 1.5f;
     private float maxMoveSpeed = 0.07f;
     private float minMoveSpeed = 0;
@@ -30,6 +31,7 @@ public class EngineShip
     {
         this.shipView = shipview;
         timer = shipView.gameObject.GetComponent<Timer>();
+        transform = shipView.gameObject.GetComponent<Transform>();
 
         shipView.shipStartMove += MoveShip;
         shipView.shipStartRotate += RotateShip;
@@ -43,7 +45,7 @@ public class EngineShip
         timer.ready += ReloudLaserCount;
     }
 
-    private void MoveShip(Transform transform)
+    private void MoveShip()
     {
         if(moveSpeed < maxMoveSpeed)
         {
@@ -54,12 +56,12 @@ public class EngineShip
 
     }
 
-    private void RotateShip(Transform transform, Vector3 directionOfRotation)
+    private void RotateShip(Vector3 directionOfRotation)
     {
         transform.Rotate(directionOfRotation.y * speedRotate, directionOfRotation.y * speedRotate, directionOfRotation.x * (-speedRotate));
     }
 
-    private void BrakingShip(Transform transform)
+    private void BrakingShip()
     {
         if ( moveSpeed > minMoveSpeed)
         {

@@ -17,9 +17,9 @@ public class Timer : MonoBehaviour
         if (timeStart)
         {
             timeLeft -= Time.deltaTime;
+            timePassed?.Invoke(timeLeft);
             if (timeLeft < 0)
             {
-                timePassed?.Invoke(timeLeft);
                 ready?.Invoke();
                 timeStart = false;
             }
