@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,7 +5,6 @@ public class AsteroidView : MonoBehaviour
 {
     [SerializeField] private Sprite[] sprites;
     private SpriteRenderer spriteRenderer;
-    private new Transform transform;
 
     private Vector3 directionAsteroidMove;
 
@@ -19,7 +16,6 @@ public class AsteroidView : MonoBehaviour
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        transform = GetComponent<Transform>();
     }
 
     private void Start()

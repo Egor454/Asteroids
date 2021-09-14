@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -28,11 +26,10 @@ public class EnemyShipSpawner : MonoBehaviour
     {
         for (int i = 0; i < amountPerSpawn; i++)
         {
-            Debug.Log("spawn");
             Vector2 spawnDirection = Random.insideUnitCircle.normalized;
             Vector3 spawnPoint = spawnDirection * spawnDistance;
 
-            spawnPoint += this.transform.position;
+            spawnPoint += transform.position;
 
             EnemyShipView enemyShip = Instantiate(enemyShipPrefab, spawnPoint, transform.rotation);
             EnemyShipModel enemyShipModel = new EnemyShipModel(enemyShip,transformTarget);

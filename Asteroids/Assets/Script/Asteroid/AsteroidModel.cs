@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -51,11 +49,17 @@ public class AsteroidModel
 
     private void ChangeSpeed()
     {
-        if (size < 1.0f)
+        if (size < 0.5f)
+        {
+            movementSpeed = movementSpeed * 4;
+            speedChanged = true;
+        }
+        else if(size < 1.0f && size > 0.5f)
         {
             movementSpeed = movementSpeed * 2;
             speedChanged = true;
         }
+         
     }
 
     private void CheckNeedSplite()

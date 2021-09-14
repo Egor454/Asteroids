@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -34,7 +32,7 @@ public class EngineShip
 
     public EngineShip(ShipView shipview)
     {
-        this.shipView = shipview;
+        shipView = shipview;
         timer = shipView.gameObject.GetComponent<Timer>();
         transform = shipView.gameObject.GetComponent<Transform>();
 
