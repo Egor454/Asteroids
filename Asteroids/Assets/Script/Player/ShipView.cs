@@ -19,6 +19,7 @@ public class ShipView : MonoBehaviour
 
     public UnityAction<BulletView> shipShootBullet;
     public UnityAction<GameObject> shipShootLaser;
+    public UnityAction haveCollision;
 
     private bool shipIsMove = false;
     private bool shipIsRotate = false;
@@ -87,6 +88,14 @@ public class ShipView : MonoBehaviour
         if (context.started)
         {
             shipShootLaser?.Invoke(laserPrefab);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Asteroid" || collision.gameObject.tag == "EnemyShip")
+        {
+            haveCollision?.Invoke();
         }
     }
 }
