@@ -5,10 +5,11 @@ public class Initialization : MonoBehaviour
     [SerializeField] GameObject shipObg;
     [SerializeField] Game game;
 
-    void Start()
+    void Awake()
     {
-        var shipView = shipObg.GetComponent<ShipView>();
-        EngineShip engineShip = new EngineShip(shipView);
-        game.Initialization(engineShip);
+        IShipView shipView = shipObg.GetComponent<ShipView>();
+        IShipModel shipModel = new ShipModel(shipObg.gameObject.transform, shipObg.GetComponent<Timer>());
+        IShipPresenter shipPresenter = new ShipPresenter(shipView, shipModel);
+        game.Initialization(shipPresenter);
     }
 }

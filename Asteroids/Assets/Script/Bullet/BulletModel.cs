@@ -1,19 +1,18 @@
+using System;
 using UnityEngine;
 
-public class BulletModel
+public class BulletModel : IBulletModel
 {
     private BulletView bullet;
     private Transform transform;
     private float speed = 30.0f;
-    public float maxLifetime = 5.0f;
+    private float maxLifetime = 5.0f;
 
-    public BulletModel(BulletView bulletView)
+    public event Action<float> DestroyBullet;
+
+    public void SetTransform(Transform transforms)
     {
-        bullet = bulletView;
-        bullet.bulletIsMove += Move;
-        bullet.WhenDestroy += Destroy;
-
-        transform = bullet.gameObject.GetComponent<Transform>();
+        transform = transforms;
     }
 
     public void Move()
@@ -23,6 +22,6 @@ public class BulletModel
 
     public void Destroy()
     {
-        bullet.DestroyBulletView(maxLifetime);
+        DestroyBullet?.Invoke(maxLifetime);
     }
 }

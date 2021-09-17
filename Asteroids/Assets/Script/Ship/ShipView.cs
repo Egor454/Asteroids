@@ -1,23 +1,22 @@
+using System;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
-public class ShipView : MonoBehaviour
+public class ShipView : MonoBehaviour,IShipView
 {
     [SerializeField] private BulletView bulletPrefab;
     [SerializeField] private GameObject laserPrefab;
 
     private new Transform transform;
 
-    public UnityAction shipStartMove;
-    public UnityAction<Vector3> shipStartRotate;
-    public UnityAction shipStopMove;
-    public UnityAction laserReloud;
-    public UnityAction checkLaserCountShoot;
-
-    public UnityAction<BulletView> shipShootBullet;
-    public UnityAction<GameObject> shipShootLaser;
-    public UnityAction haveCollision;
+    public event Action shipStartMove;
+    public event Action<Vector3> shipStartRotate;
+    public event Action shipStopMove;
+    public event Action checkLaserCountShoot;
+    public event Action<IBulletView> shipShootBullet;
+    public event Action<GameObject> shipShootLaser;
+    public event Action haveCollision;
+    public event Action UninitializePresenter;
 
     private bool shipIsMove = false;
     private bool shipIsRotate = false;
@@ -76,7 +75,7 @@ public class ShipView : MonoBehaviour
     {
         if (context.started)
         {
-            BulletView bullet = Instantiate(bulletPrefab,transform.position,transform.rotation);
+            IBulletView bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
             shipShootBullet?.Invoke(bullet);
         }
     }
@@ -93,7 +92,12 @@ public class ShipView : MonoBehaviour
     {
         if (collision.gameObject.tag == "Asteroid" || collision.gameObject.tag == "EnemyShip")
         {
-            haveCollision?.Invoke();
+            haveCollision();
         }
+    }
+
+    private void OnDestroy()
+    {
+        UninitializePresenter?.Invoke();
     }
 }

@@ -9,7 +9,7 @@ public class Game : MonoBehaviour
     [SerializeField] private GameObject massegeBoxGameOver;
     [SerializeField] private AsteroidSpawner asteroidSpawner;
     [SerializeField] private EnemyShipSpawner enemyShipSpawner;
-    [SerializeField] private EngineShip ship;
+    [SerializeField] private IShipPresenter shipPresenter;
     [SerializeField] private Text scoreText;
     [SerializeField] private Text positionShip;
     [SerializeField] private Text rotationShip;
@@ -25,10 +25,11 @@ public class Game : MonoBehaviour
 
 
 
-    public void Initialization(EngineShip ships)
+    public void Initialization(IShipPresenter presenter)
     {
-        ship = ships;
-        ship.shipDestroy += GameOver;
+        shipPresenter = presenter;
+        shipPresenter.sendDataPresenter += UpdateUI;
+        shipPresenter.shipWasDestroy += GameOver;
     }
     private void Start()
     {
@@ -40,7 +41,7 @@ public class Game : MonoBehaviour
 
     private void Update()
     {
-        UpdateUI();
+        shipPresenter.TakeData();
     }
 
     private void GameOver()
@@ -63,13 +64,13 @@ public class Game : MonoBehaviour
         }
     }
 
-    private void UpdateUI()
+    private void UpdateUI(float moveSpeed, int countLaserShoot,float timeReloudLaser)
     {
         positionShip.text = "X:" + Math.Round(transformShip.position.x, 2).ToString() + "Y:" + Math.Round(transformShip.position.y, 2).ToString();
-        rotationShip.text = "Rot:" + transformShip.eulerAngles.z.ToString();
-        speedShip.text = "Speed:" + Math.Round(ship.MoveSpeed,4).ToString();
-        countLaserShip.text = "LaserShoot:" + ship.CountShootLaser.ToString();
-        timeReloudLaserShip.text = "TimeRel:" + Math.Round(ship.TimePassedText,0).ToString() + " sec";
+        rotationShip.text = "Rot:" + Math.Round(transformShip.eulerAngles.z,2).ToString();
+        speedShip.text = "Speed:" + Math.Round(moveSpeed, 4).ToString();
+        countLaserShip.text = "LaserShoot:" + countLaserShoot.ToString();
+        timeReloudLaserShip.text = "TimeRel:" + Math.Round(timeReloudLaser, 0).ToString() + " sec";
     }
 
     public void Restart()

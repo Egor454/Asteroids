@@ -1,11 +1,9 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class EngineShip
+public class ShipModel: IShipModel
 {
-    private ShipView shipView;
-    private LaserModel laserModel;
-    private LaserView laserView;
     private GameObject laserObj;
     private Timer timer;
     private Transform transform;
@@ -24,32 +22,19 @@ public class EngineShip
     private float timePassedText = 0;
     private bool laserIsReloud = false;
 
-    public int CountShootLaser => countShootLaser;
-    public float TimePassedText => timePassedText;
-    public float MoveSpeed => moveSpeed;
+    public event Action<float, int, float> sendDataModel;
+    public event Action shipDestroy;
 
-    public UnityAction shipDestroy;
-
-    public EngineShip(ShipView shipview)
+    public ShipModel(Transform transforms, Timer times)
     {
-        shipView = shipview;
-        timer = shipView.gameObject.GetComponent<Timer>();
-        transform = shipView.gameObject.GetComponent<Transform>();
-
-        shipView.shipStartMove += MoveShip;
-        shipView.shipStartRotate += RotateShip;
-        shipview.shipStopMove += BrakingShip;
-        shipView.shipShootBullet += StartShootBullet;
-        shipView.shipShootLaser += StartShootLaser;
-        shipView.laserReloud += ReloudLaserCount;
-        shipView.checkLaserCountShoot += StartReloudLaser;
-        shipview.haveCollision += DieShip;
+        timer = times;
+        transform = transforms;
 
         timer.timePassed += SetTimePassed;
         timer.ready += ReloudLaserCount;
     }
 
-    private void MoveShip()
+    public void MoveShip()
     {
         if(moveSpeed < maxMoveSpeed)
         {
@@ -60,12 +45,12 @@ public class EngineShip
 
     }
 
-    private void RotateShip(Vector3 directionOfRotation)
+    public void RotateShip(Vector3 directionOfRotation)
     {
         transform.Rotate(directionOfRotation.y * speedRotate, directionOfRotation.y * speedRotate, directionOfRotation.x * (-speedRotate));
     }
 
-    private void BrakingShip()
+    public void BrakingShip()
     {
         if ( moveSpeed > minMoveSpeed)
         {
@@ -79,29 +64,31 @@ public class EngineShip
         }
     }
 
-    private void StartShootBullet(BulletView bullet)
+    public void StartShootBullet(IBulletView bullet)
     {
-        BulletModel bulletModel = new BulletModel(bullet);
+        IBulletModel bulletModel = new BulletModel();
+        IBulletPresenter bulletPresenter = new BulletPresenter(bullet, bulletModel);
     }
 
-    private void StartShootLaser(GameObject laser)
+    public void StartShootLaser(GameObject laser)
     {
         if(laserObj == null)
         {
             laserObj = laser;
-            laserView = laserObj.GetComponent<LaserView>();
-            laserModel = new LaserModel(laserView);
+            ILaserView laserView = laserObj.GetComponent<ILaserView>();
+            ILaserModel laserModel = new LaserModel(laserObj);
+            ILaserPresenter laserPresenter = new LaserPresenter(laserView, laserModel);
         }
 
        if(countShootLaser != 0)
         {
-            laserView.gameObject.SetActive(true);
+            laserObj.SetActive(true);
             countShootLaser--;
             StartReloudLaser();
         }
     }
 
-    private void StartReloudLaser()
+    public void StartReloudLaser()
     {
         if(countShootLaser != countShootLaserMax && !laserIsReloud)
         {
@@ -121,8 +108,13 @@ public class EngineShip
         timePassedText = time;
     }
 
-    private void DieShip()
+    public void DieShip()
     {
         shipDestroy?.Invoke();
+    }
+
+    public void SendData()
+    {
+        sendDataModel?.Invoke(moveSpeed, countShootLaser, timePassedText);
     }
 }

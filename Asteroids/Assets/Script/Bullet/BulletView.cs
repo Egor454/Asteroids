@@ -1,13 +1,19 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class BulletView : MonoBehaviour
+public class BulletView : MonoBehaviour,IBulletView
 {
-    public UnityAction bulletIsMove;
-    public UnityAction WhenDestroy;
+    public event Action bulletIsMove;
+    public event Action whenDestroy;
+    public event Action<Transform> setTransformPosition;
+    public event Action uninitializePresenter;
+
     void Start()
     {
-        WhenDestroy?.Invoke();
+        whenDestroy?.Invoke();
+        setTransformPosition?.Invoke(this.gameObject.GetComponent<Transform>());
+
     }
 
     void FixedUpdate()
@@ -25,5 +31,10 @@ public class BulletView : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    private void OnDestroy()
+    {
+        uninitializePresenter?.Invoke();
     }
 }

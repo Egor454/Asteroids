@@ -1,24 +1,24 @@
-
-public class LaserModel
+using UnityEngine;
+using System;
+public class LaserModel : ILaserModel
 {
-    private LaserView laser;
+    private GameObject laser;
 
     private int timeShooting = 5;
 
-    public LaserModel(LaserView laserView)
-    {
-        laser = laserView;
+    public event Action<int> StartShoot;
 
-        laser.laserActivated += StartTimeLaserEndShoot;
-        laser.laserCantShoot += StopWorkLaser;
+    public LaserModel(GameObject gameObject)
+    {
+        laser = gameObject;
     }
 
-    private void StartTimeLaserEndShoot()
+    public void StartTimeLaserShoot()
     {
-        laser.StartTimerShoot(timeShooting);
+        StartShoot?.Invoke(timeShooting);
     }
 
-    private void StopWorkLaser()
+    public void StopWorkLaser()
     {
         laser.gameObject.SetActive(false);
     }
