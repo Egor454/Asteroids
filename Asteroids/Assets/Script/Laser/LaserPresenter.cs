@@ -4,7 +4,7 @@ public class LaserPresenter : ILaserPresenter
     ILaserView laserView;
     ILaserModel laserModel;
 
-    public LaserPresenter(ILaserView view,ILaserModel model)
+    public LaserPresenter(ILaserView view, ILaserModel model)
     {
         laserView = view;
         laserModel = model;

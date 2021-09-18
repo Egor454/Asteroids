@@ -1,7 +1,7 @@
-using UnityEngine;
 using System;
+using UnityEngine;
 using UnityEngine.InputSystem;
-public interface IShipView 
+public interface IShipView
 {
     event Action shipStartMove;
     event Action<Vector3> shipStartRotate;

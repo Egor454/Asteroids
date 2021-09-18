@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
 
-public class ShipPresenter: IShipPresenter
+public class ShipPresenter : IShipPresenter
 {
-    private  IShipView shipView;
+    private IShipView shipView;
     private IShipModel shipModel;
 
     public event Action<float, int, float> sendDataPresenter;
@@ -51,7 +51,7 @@ public class ShipPresenter: IShipPresenter
         shipModel.DieShip();
     }
 
-    private void SendDataPresenter(float speed, int countLaser,float timeReloud)
+    private void SendDataPresenter(float speed, int countLaser, float timeReloud)
     {
         sendDataPresenter?.Invoke(speed, countLaser, timeReloud);
     }

@@ -1,10 +1,10 @@
+using System;
 using UnityEngine;
-using UnityEngine.Events;
 
-public class Timer : MonoBehaviour
+public class Timer : MonoBehaviour, ITimer
 {
-    public UnityAction<float> timePassed;
-    public UnityAction ready;
+    public event Action<float> timePassed;
+    public event Action ready;
 
     private bool timeStart = false;
     private float timeLeft;
@@ -21,7 +21,7 @@ public class Timer : MonoBehaviour
                 timeStart = false;
             }
         }
-      
+
     }
 
     public void TimerNeedOn(float time)

@@ -1,15 +1,14 @@
 using System;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-public class Game : MonoBehaviour
+public class Game : MonoBehaviour, IGame
 {
     [SerializeField] private GameObject shipObj;
     [SerializeField] private GameObject massegeBoxGameOver;
     [SerializeField] private AsteroidSpawner asteroidSpawner;
     [SerializeField] private EnemyShipSpawner enemyShipSpawner;
-    [SerializeField] private IShipPresenter shipPresenter;
     [SerializeField] private Text scoreText;
     [SerializeField] private Text positionShip;
     [SerializeField] private Text rotationShip;
@@ -18,12 +17,11 @@ public class Game : MonoBehaviour
     [SerializeField] private Text timeReloudLaserShip;
 
     private Transform transformShip;
-    private AsteroidView asteroid;
-    private EnemyShipView enemyShip;
+    private IAsteroidPresenter asteroid;
+    private IEnemyShipPresenter enemyShip;
+    private IShipPresenter shipPresenter;
 
     private int score;
-
-
 
     public void Initialization(IShipPresenter presenter)
     {
@@ -35,8 +33,8 @@ public class Game : MonoBehaviour
     {
         transformShip = shipObj.gameObject.GetComponent<Transform>();
 
-        asteroidSpawner.asteroidCrate += SetAsteroidData;
-        enemyShipSpawner.enemyShipCrate += SetEnemyShipData;
+        asteroidSpawner.asteroidCreate += SetAsteroidData;
+        enemyShipSpawner.enemyShipCreate += SetEnemyShipData;
     }
 
     private void Update()
@@ -54,41 +52,41 @@ public class Game : MonoBehaviour
 
     private void SetScore(GameObject obj)
     {
-        if(obj.tag == "Asteroid")
+        if (obj.tag == "Asteroid")
         {
             score += 100;
         }
-        else if(obj.tag == "EnemyShip")
+        else if (obj.tag == "EnemyShip")
         {
             score += 200;
         }
     }
 
-    private void UpdateUI(float moveSpeed, int countLaserShoot,float timeReloudLaser)
+    private void UpdateUI(float moveSpeed, int countLaserShoot, float timeReloudLaser)
     {
         positionShip.text = "X:" + Math.Round(transformShip.position.x, 2).ToString() + "Y:" + Math.Round(transformShip.position.y, 2).ToString();
-        rotationShip.text = "Rot:" + Math.Round(transformShip.eulerAngles.z,2).ToString();
+        rotationShip.text = "Rot:" + Math.Round(transformShip.eulerAngles.z, 2).ToString();
         speedShip.text = "Speed:" + Math.Round(moveSpeed, 4).ToString();
         countLaserShip.text = "LaserShoot:" + countLaserShoot.ToString();
         timeReloudLaserShip.text = "TimeRel:" + Math.Round(timeReloudLaser, 0).ToString() + " sec";
     }
 
-    public void Restart()
+    private void Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    private void SetAsteroidData(AsteroidView asteroidView)
+    private void SetAsteroidData(IAsteroidPresenter asteroidPresenter)
     {
-        asteroid = asteroidView;
-        asteroid.wasDestroy += SetScore;
+        asteroid = asteroidPresenter;
+        asteroidPresenter.asteroidWasDestroy += SetScore;
 
     }
 
-    private void SetEnemyShipData(EnemyShipView enemyShipView)
+    private void SetEnemyShipData(IEnemyShipPresenter enemyPresenter)
     {
-        enemyShip = enemyShipView;
-        enemyShip.wasDestroy += SetScore;
+        enemyShip = enemyPresenter;
+        enemyShip.EnemyShipWasDestroy += SetScore;
 
     }
 }

@@ -1,9 +1,8 @@
+using System;
 using UnityEngine;
-using UnityEngine.Events;
 
-public class AsteroidModel
+public class AsteroidModel : IAsteroidModel
 {
-    private AsteroidView asteroid;
     private Transform transform;
 
     private float movementSpeed = 1.0f;
@@ -14,26 +13,25 @@ public class AsteroidModel
     private float minSize;
     private float maxSize;
 
-    public UnityAction<AsteroidView, Transform, float> needSplitAsteroid;
+    private Vector3 direction;
 
-    public AsteroidModel(AsteroidView asteroidView,float needSize,float minNeedSize,float needMaxSize)
+    public event Action<Transform, float> needSplitAsteroid;
+    public event Action<float> destroyAsteroid;
+
+    public AsteroidModel(Transform transforms, Vector3 directionAsteroidMove, float needSize, float minNeedSize, float needMaxSize)
     {
-        asteroid = asteroidView;
-        transform = asteroidView.gameObject.GetComponent<Transform>();
         size = needSize;
         minSize = minNeedSize;
         maxSize = needMaxSize;
+        direction = directionAsteroidMove;
+        transform = transforms;
 
-        asteroid.asteroidNeedMove += Move;
-        asteroid.whenDestroy += Destroy;
-        asteroid.wasColision += CheckNeedSplite;
-
-        transform.eulerAngles = new Vector3(0.0f, 0.0f, Random.value * 360.0f);
+        transform.eulerAngles = new Vector3(0.0f, 0.0f, UnityEngine.Random.value * 360.0f);
 
         transform.localScale = Vector3.one * size;
     }
 
-    private void Move(Vector3 direction)
+    public void Move()
     {
         if (!speedChanged)
         {
@@ -42,9 +40,9 @@ public class AsteroidModel
         transform.position += direction * movementSpeed * Time.deltaTime;
     }
 
-    private void Destroy()
+    public void Destroy()
     {
-        asteroid.DestroyAsteroidView(maxLifetime);
+        destroyAsteroid?.Invoke(maxLifetime);
     }
 
     private void ChangeSpeed()
@@ -54,19 +52,19 @@ public class AsteroidModel
             movementSpeed = movementSpeed * 4;
             speedChanged = true;
         }
-        else if(size < 1.0f && size > 0.5f)
+        else if (size < 1.0f && size > 0.5f)
         {
             movementSpeed = movementSpeed * 2;
             speedChanged = true;
         }
-         
+
     }
 
-    private void CheckNeedSplite()
+    public void CheckNeedSplite()
     {
         if ((size * 0.5f) >= minSize)
         {
-            needSplitAsteroid?.Invoke(asteroid,transform,size);
+            needSplitAsteroid?.Invoke(transform, size);
         }
     }
 

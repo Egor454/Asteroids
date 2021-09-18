@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -16,9 +14,9 @@ public class AsteroidSpawner : MonoBehaviour
     [SerializeField] private float minSize = 0.35f;
     [SerializeField] private float maxSize = 1.65f;
 
-    private  new Transform transform;
+    private new Transform transform;
 
-    public UnityAction<AsteroidView> asteroidCrate;
+    public UnityAction<IAsteroidPresenter> asteroidCreate;
 
     private void Start()
     {
@@ -40,30 +38,29 @@ public class AsteroidSpawner : MonoBehaviour
 
             AsteroidView asteroid = Instantiate(asteroidPrefab, spawnPoint, rotation);
             size = Random.Range(minSize, maxSize);
-            AsteroidModel asteroidModel = new AsteroidModel(asteroid, size, minSize, maxSize);
-            asteroidModel.needSplitAsteroid += CreateSplit;
-            asteroidCrate?.Invoke(asteroid);
-
             Vector3 trajectory = rotation * -spawnDirection;
-            asteroid.SetTrajectory(trajectory);
+            IAsteroidModel asteroidModel = new AsteroidModel(asteroid.gameObject.GetComponent<Transform>(), trajectory, size, minSize, maxSize);
+            IAsteroidPresenter asteroidPresenter = new AsteroidPresenter(asteroid, asteroidModel);
+            asteroidPresenter.needSplitAsteroid += CreateSplit;
+            asteroidCreate?.Invoke(asteroidPresenter);
+
         }
     }
 
-    private void CreateSplit(AsteroidView asteroidSplit, Transform transformSplitAsteroid, float sizeSplitAsteroid)
+    private void CreateSplit(Transform transformSplitAsteroid, float sizeSplitAsteroid)
     {
-        for(int i = 0; i < countForSplit; i++)
+        for (int i = 0; i < countForSplit; i++)
         {
             Vector2 position = transformSplitAsteroid.position;
             position += Random.insideUnitCircle * 0.5f;
 
-            AsteroidView asteroidSmall = Instantiate(asteroidSplit, position, transformSplitAsteroid.rotation);
+            AsteroidView asteroidSmall = Instantiate(asteroidPrefab, position, transformSplitAsteroid.rotation);
             size = sizeSplitAsteroid * 0.5f;
-            AsteroidModel asteroidModel = new AsteroidModel(asteroidSmall, size, minSize, maxSize);
-            asteroidModel.needSplitAsteroid += CreateSplit;
-            asteroidCrate?.Invoke(asteroidSmall);
-
-            asteroidSmall.SetTrajectory(Random.insideUnitCircle.normalized);
+            IAsteroidModel asteroidModel = new AsteroidModel(asteroidSmall.gameObject.GetComponent<Transform>(), Random.insideUnitCircle.normalized, size, minSize, maxSize);
+            IAsteroidPresenter asteroidPresenter = new AsteroidPresenter(asteroidSmall, asteroidModel);
+            asteroidPresenter.needSplitAsteroid += CreateSplit;
+            asteroidCreate?.Invoke(asteroidPresenter);
         }
-   
+
     }
 }

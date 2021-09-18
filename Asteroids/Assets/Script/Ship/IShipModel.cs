@@ -1,8 +1,8 @@
-using UnityEngine;
 using System;
+using UnityEngine;
 public interface IShipModel
 {
-    event Action<float,int,float> sendDataModel;
+    event Action<float, int, float> sendDataModel;
     event Action shipDestroy;
 
     void MoveShip();

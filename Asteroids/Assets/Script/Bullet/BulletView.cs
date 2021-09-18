@@ -1,8 +1,7 @@
 using System;
 using UnityEngine;
-using UnityEngine.Events;
 
-public class BulletView : MonoBehaviour,IBulletView
+public class BulletView : MonoBehaviour, IBulletView
 {
     public event Action bulletIsMove;
     public event Action whenDestroy;

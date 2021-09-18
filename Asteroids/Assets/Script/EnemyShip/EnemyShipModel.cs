@@ -1,31 +1,29 @@
+using System;
 using UnityEngine;
 
-public class EnemyShipModel
+public class EnemyShipModel : IEnemyShipModel
 {
-    private EnemyShipView enemyShip;
     private Transform transform;
     private Transform transformTarget;
 
     private float speed = 1.0f;
     private float maxTimeLife = 35.0f;
 
-    public EnemyShipModel(EnemyShipView enemyShipView,Transform target)
-    {
-        enemyShip = enemyShipView;
-        transform = enemyShip.gameObject.GetComponent<Transform>();
-        transformTarget = target;
+    public event Action<float> destroyEnemyShip;
 
-        enemyShip.enemyShipNeedMove += Move;
-        enemyShip.whenDestroy += Destroy;
+    public EnemyShipModel(Transform target, Transform transforms)
+    {
+        transform = transforms;
+        transformTarget = target;
     }
 
-    private void Move()
+    public void Move()
     {
         transform.position = Vector3.MoveTowards(transform.position, transformTarget.position, speed * Time.deltaTime);
     }
-    
-    private void Destroy()
+
+    public void Destroy()
     {
-        enemyShip.DestroyEnemyShipView(maxTimeLife);
+        destroyEnemyShip?.Invoke(maxTimeLife);
     }
 }

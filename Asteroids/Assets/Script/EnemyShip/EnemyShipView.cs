@@ -1,12 +1,11 @@
+using System;
 using UnityEngine;
-using UnityEngine.Events;
 
-public class EnemyShipView : MonoBehaviour
+public class EnemyShipView : MonoBehaviour, IEnemyShipView
 {
-
-    public UnityAction enemyShipNeedMove;
-    public UnityAction whenDestroy;
-    public UnityAction<GameObject> wasDestroy;
+    public event Action enemyShipNeedMove;
+    public event Action whenDestroy;
+    public event Action<GameObject> wasDestroy;
 
     private void Start()
     {
@@ -30,6 +29,6 @@ public class EnemyShipView : MonoBehaviour
             wasDestroy?.Invoke(gameObject);
             Destroy(gameObject);
         }
-        
+
     }
 }

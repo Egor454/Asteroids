@@ -1,9 +1,8 @@
+using System;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class EnemyShipSpawner : MonoBehaviour
 {
-
     [SerializeField] private EnemyShipView enemyShipPrefab;
     [SerializeField] private ShipView shipTarget;
     [SerializeField] private float spawnDistance = 12.0f;
@@ -13,7 +12,7 @@ public class EnemyShipSpawner : MonoBehaviour
     private new Transform transform;
     private Transform transformTarget;
 
-    public UnityAction<EnemyShipView> enemyShipCrate;
+    public Action<IEnemyShipPresenter> enemyShipCreate;
 
     private void Start()
     {
@@ -22,18 +21,19 @@ public class EnemyShipSpawner : MonoBehaviour
         transformTarget = shipTarget.gameObject.GetComponent<Transform>();
     }
 
-    public void Spawn()
+    private void Spawn()
     {
         for (int i = 0; i < amountPerSpawn; i++)
         {
-            Vector2 spawnDirection = Random.insideUnitCircle.normalized;
+            Vector2 spawnDirection = UnityEngine.Random.insideUnitCircle.normalized;
             Vector3 spawnPoint = spawnDirection * spawnDistance;
 
             spawnPoint += transform.position;
 
-            EnemyShipView enemyShip = Instantiate(enemyShipPrefab, spawnPoint, transform.rotation);
-            EnemyShipModel enemyShipModel = new EnemyShipModel(enemyShip,transformTarget);
-            enemyShipCrate?.Invoke(enemyShip);
+            EnemyShipView enemyShipView = Instantiate(enemyShipPrefab, spawnPoint, transform.rotation);
+            IEnemyShipModel enemyShipModel = new EnemyShipModel(transformTarget, enemyShipView.gameObject.GetComponent<Transform>());
+            IEnemyShipPresenter enemyPresenter = new EnemyShipPresenter(enemyShipView, enemyShipModel);
+            enemyShipCreate?.Invoke(enemyPresenter);
         }
     }
 

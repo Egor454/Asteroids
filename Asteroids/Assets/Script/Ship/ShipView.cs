@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class ShipView : MonoBehaviour,IShipView
+public class ShipView : MonoBehaviour, IShipView
 {
     [SerializeField] private BulletView bulletPrefab;
     [SerializeField] private GameObject laserPrefab;

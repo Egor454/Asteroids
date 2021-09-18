@@ -1,9 +1,8 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
 
-public class LaserView : MonoBehaviour,ILaserView
+public class LaserView : MonoBehaviour, ILaserView
 {
     public event Action laserActivated;
     public event Action laserCantShoot;

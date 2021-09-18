@@ -1,11 +1,10 @@
 using System;
 using UnityEngine;
-using UnityEngine.Events;
 
-public class ShipModel: IShipModel
+public class ShipModel : IShipModel
 {
     private GameObject laserObj;
-    private Timer timer;
+    private ITimer timer;
     private Transform transform;
 
     private float speed = 0.0001f;
@@ -25,7 +24,7 @@ public class ShipModel: IShipModel
     public event Action<float, int, float> sendDataModel;
     public event Action shipDestroy;
 
-    public ShipModel(Transform transforms, Timer times)
+    public ShipModel(Transform transforms, ITimer times)
     {
         timer = times;
         transform = transforms;
@@ -36,7 +35,7 @@ public class ShipModel: IShipModel
 
     public void MoveShip()
     {
-        if(moveSpeed < maxMoveSpeed)
+        if (moveSpeed < maxMoveSpeed)
         {
             moveSpeed += speed + acceleration * Time.deltaTime;
             acceleration += constantAcceleration;
@@ -52,7 +51,7 @@ public class ShipModel: IShipModel
 
     public void BrakingShip()
     {
-        if ( moveSpeed > minMoveSpeed)
+        if (moveSpeed > minMoveSpeed)
         {
             moveSpeed -= constantBraking * Time.deltaTime;
             acceleration = 0;
@@ -72,7 +71,7 @@ public class ShipModel: IShipModel
 
     public void StartShootLaser(GameObject laser)
     {
-        if(laserObj == null)
+        if (laserObj == null)
         {
             laserObj = laser;
             ILaserView laserView = laserObj.GetComponent<ILaserView>();
@@ -80,7 +79,7 @@ public class ShipModel: IShipModel
             ILaserPresenter laserPresenter = new LaserPresenter(laserView, laserModel);
         }
 
-       if(countShootLaser != 0)
+        if (countShootLaser != 0)
         {
             laserObj.SetActive(true);
             countShootLaser--;
@@ -90,7 +89,7 @@ public class ShipModel: IShipModel
 
     public void StartReloudLaser()
     {
-        if(countShootLaser != countShootLaserMax && !laserIsReloud)
+        if (countShootLaser != countShootLaserMax && !laserIsReloud)
         {
             laserIsReloud = true;
             timer.TimerNeedOn(timeReloud);
@@ -102,7 +101,7 @@ public class ShipModel: IShipModel
         countShootLaser++;
         laserIsReloud = false;
     }
-    
+
     private void SetTimePassed(float time)
     {
         timePassedText = time;

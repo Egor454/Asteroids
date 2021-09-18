@@ -1,17 +1,16 @@
+using System;
 using UnityEngine;
-using UnityEngine.Events;
 
-public class AsteroidView : MonoBehaviour
+public class AsteroidView : MonoBehaviour, IAsteroidView
 {
     [SerializeField] private Sprite[] sprites;
     private SpriteRenderer spriteRenderer;
 
-    private Vector3 directionAsteroidMove;
-
-    public UnityAction<Vector3> asteroidNeedMove;
-    public UnityAction whenDestroy;
-    public UnityAction wasColision;
-    public UnityAction<GameObject> wasDestroy;
+    public event Action asteroidNeedMove;
+    public event Action whenDestroy;
+    public event Action wasColision;
+    public event Action<GameObject> wasDestroy;
+    public event Action UninitializePresenter;
 
     private void Awake()
     {
@@ -20,19 +19,14 @@ public class AsteroidView : MonoBehaviour
 
     private void Start()
     {
-        spriteRenderer.sprite = sprites[Random.Range(0, sprites.Length)];
+        spriteRenderer.sprite = sprites[UnityEngine.Random.Range(0, sprites.Length)];
 
         whenDestroy?.Invoke();
     }
 
     private void FixedUpdate()
     {
-        asteroidNeedMove?.Invoke(directionAsteroidMove);
-    }
-
-    public void SetTrajectory(Vector3 direction)
-    {
-        directionAsteroidMove = direction;
+        asteroidNeedMove?.Invoke();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -53,5 +47,9 @@ public class AsteroidView : MonoBehaviour
     public void DestroyAsteroidView(float time)
     {
         Destroy(gameObject, time);
+    }
+    private void OnDestroy()
+    {
+        UninitializePresenter?.Invoke();
     }
 }
